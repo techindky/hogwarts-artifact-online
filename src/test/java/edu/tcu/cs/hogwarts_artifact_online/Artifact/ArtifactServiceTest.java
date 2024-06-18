@@ -1,6 +1,7 @@
 package edu.tcu.cs.hogwarts_artifact_online.Artifact;
 
 import edu.tcu.cs.hogwarts_artifact_online.Artifact.utils.IdWorker;
+import edu.tcu.cs.hogwarts_artifact_online.System.Exception.ObjectNotFoundException;
 import edu.tcu.cs.hogwarts_artifact_online.Wizard.Wizard;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willCallRealMethod;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -87,13 +87,11 @@ class ArtifactServiceTest {
         //Given
         given(artifactRepository.findById(Mockito.any(String.class))).willReturn(Optional.empty());
         //When
-        Throwable thrown = catchThrowable(() ->{
-            Artifact returnedArtifact = artifactService.findById("125732919271923");
-                });
+        Throwable thrown = catchThrowable(() -> artifactService.findById("125732919271923"));
         //Then
         assertThat(thrown)
-                .isInstanceOf(ArtifactNotFoundException.class)
-                .hasMessage("Could not find artifact by id 125732919271923 :(");
+                .isInstanceOf(ObjectNotFoundException.class)
+                .hasMessage("Could not find artifact with id 125732919271923 :(");
         verify(artifactRepository, times(1)).findById("125732919271923");
     }
     @Test
@@ -156,9 +154,7 @@ class ArtifactServiceTest {
 
         given(artifactRepository.findById("125732919271923")).willReturn(Optional.empty());
 
-        assertThrows(ArtifactNotFoundException.class, () -> {
-            artifactService.updateArtifact("125732919271923",updated);
-        });
+        assertThrows(ObjectNotFoundException.class, () -> artifactService.updateArtifact("125732919271923",updated));
         verify(this.artifactRepository, times(1)).findById("125732919271923");
     }
     @Test
@@ -179,9 +175,7 @@ class ArtifactServiceTest {
     void deleteArtifactNotFound(){
         given(this.artifactRepository.findById("125732919271923")).willReturn(Optional.empty());
 
-        assertThrows(ArtifactNotFoundException.class, ()->{
-            artifactService.deleteArtifact("125732919271923");
-        });
+        assertThrows(ObjectNotFoundException.class, ()-> artifactService.deleteArtifact("125732919271923"));
 
         verify(artifactRepository, times(1)).findById("125732919271923");
 

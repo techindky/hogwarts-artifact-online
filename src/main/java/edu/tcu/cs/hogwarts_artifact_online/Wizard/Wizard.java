@@ -1,20 +1,19 @@
 package edu.tcu.cs.hogwarts_artifact_online.Wizard;
 
 import edu.tcu.cs.hogwarts_artifact_online.Artifact.Artifact;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Wizard {
+public class Wizard implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String name;
 
@@ -31,5 +30,13 @@ public class Wizard {
 
     public Integer getNumberofArtifacts() {
         return this.artifacts.size();
+    }
+    public void removeAllArtifacts() {
+        this.artifacts.stream().forEach(artifact -> artifact.setWizard(null));
+        this.artifacts = new ArrayList<>();
+    }
+    public void removeArtifact(Artifact artifactToBeAssigned) {
+        artifactToBeAssigned.setWizard(null);
+        this.artifacts.remove(artifactToBeAssigned);
     }
 }
