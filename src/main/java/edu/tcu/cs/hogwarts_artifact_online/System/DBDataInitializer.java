@@ -2,21 +2,28 @@ package edu.tcu.cs.hogwarts_artifact_online.System;
 
 import edu.tcu.cs.hogwarts_artifact_online.Artifact.Artifact;
 import edu.tcu.cs.hogwarts_artifact_online.Artifact.ArtifactRepository;
+import edu.tcu.cs.hogwarts_artifact_online.HogwartsUser.HogwartsUser;
+import edu.tcu.cs.hogwarts_artifact_online.HogwartsUser.UserService;
 import edu.tcu.cs.hogwarts_artifact_online.Wizard.Wizard;
 import edu.tcu.cs.hogwarts_artifact_online.Wizard.WizardRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+//@Profile("dev")
 public class DBDataInitializer implements CommandLineRunner {
 
     private final ArtifactRepository artifactRepository;
 
     private final WizardRepository wizardRepository;
 
-    public DBDataInitializer(ArtifactRepository artifactRepository, WizardRepository wizardRepository) {
+    private final UserService userService;
+
+    public DBDataInitializer(ArtifactRepository artifactRepository, WizardRepository wizardRepository, UserService userService) {
         this.artifactRepository = artifactRepository;
         this.wizardRepository = wizardRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -74,10 +81,35 @@ public class DBDataInitializer implements CommandLineRunner {
         w3.setName("Ron Weasley");
         w3.addArtifact(a5);
 
+        HogwartsUser u1 = new HogwartsUser();
+        u1.setId(1);
+        u1.setUsername("tony");
+        u1.setPassword("123456");
+        u1.setEnabled(true);
+        u1.setRoles("admin user");
+
+        HogwartsUser u2 = new HogwartsUser();
+        u2.setId(2);
+        u2.setUsername("eric");
+        u2.setPassword("654321");
+        u2.setEnabled(true);
+        u2.setRoles("user");
+
+        HogwartsUser u3 = new HogwartsUser();
+        u3.setId(3);
+        u3.setUsername("tom");
+        u3.setPassword("qwerty");
+        u3.setEnabled(false);
+        u3.setRoles("user");
+
         wizardRepository.save(w1);
         wizardRepository.save(w2);
         wizardRepository.save(w3);
 
         artifactRepository.save(a6);
+
+        userService.addUser(u1);
+        userService.addUser(u2);
+        userService.addUser(u3);
     }
 }
